@@ -41,9 +41,30 @@ class NotesCubit extends Cubit<NotesStates> {
 
   void getNotes() {}
 
-  void editNote() {}
+  void editNote(NoteModel noteModel, String newTitle, String newDescription) {
+    if (noteModel.title != newTitle) {
+      noteModel.title = newTitle;
+    }
+    if (noteModel.description != newDescription) {
+      noteModel.description = newDescription;
+    }
+    emit(UpdateNoteState());
+  }
 
-  void deleteNote() {}
+  void deleteNote(int index) {
+    userNotes.removeAt(index);
+    emit(DeleteNoteState());
+  }
 
-  void pinNote() {}
+  void pinNote(NoteModel noteModel, int currentIndex) {
+    if (noteModel.isBinned) {
+      userNotes.removeAt(currentIndex);
+      userNotes.add(noteModel);
+    } else {
+      userNotes.removeAt(currentIndex);
+      userNotes.insert(0, noteModel);
+    }
+    noteModel.isBinned = !noteModel.isBinned;
+    emit(PinNoteState());
+  }
 }

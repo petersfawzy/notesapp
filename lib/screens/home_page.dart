@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_2/logic/cubit.dart';
 import 'package:flutter_application_2/logic/states.dart';
 import 'package:flutter_application_2/screens/add_note.dart';
+import 'package:flutter_application_2/screens/edit_note.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePage extends StatefulWidget {
@@ -37,16 +38,35 @@ class _HomePageState extends State<HomePage> {
                 i < BlocProvider.of<NotesCubit>(context).userNotes.length;
                 i++)
               InkWell(
-                onTap: () {},
-                onLongPress: () {},
+                onTap: () {
+                  BlocProvider.of<NotesCubit>(context).deleteNote(i);
+                },
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    color: Colors.teal,
+                    color: BlocProvider.of<NotesCubit>(context)
+                            .userNotes[i]
+                            .isBinned
+                        ? Colors.teal
+                        : Colors.red,
                   ),
                   margin: EdgeInsets.all(10.0),
                   padding: EdgeInsets.all(10.0),
                   child: ListTile(
+                    leading: IconButton(
+                      icon: Icon(BlocProvider.of<NotesCubit>(context)
+                              .userNotes[i]
+                              .isBinned
+                          ? Icons.remove
+                          : Icons.add),
+                      color: Colors.white,
+                      iconSize: 20.0,
+                      onPressed: () {
+                        BlocProvider.of<NotesCubit>(context).pinNote(
+                            BlocProvider.of<NotesCubit>(context).userNotes[i],
+                            i);
+                      },
+                    ),
                     title: Text(
                         BlocProvider.of<NotesCubit>(context).userNotes[i].title,
                         style: TextStyle(
@@ -62,7 +82,15 @@ class _HomePageState extends State<HomePage> {
                       icon: Icon(Icons.edit),
                       color: Colors.white,
                       iconSize: 20.0,
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                                builder: (_) => EditNote(
+                                    noteModel:
+                                        BlocProvider.of<NotesCubit>(context)
+                                            .userNotes[i])));
+                      },
                     ),
                   ),
                 ),
