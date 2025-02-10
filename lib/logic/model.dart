@@ -1,5 +1,5 @@
 class NoteModel {
-  int id;
+  String id;
   String title;
   String description;
   String createdAt;
